@@ -1,12 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import time
 import json
+import argparse
+import pathlib
 import configparser
 
 from lib.bing import Bing
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Ads Monitor tool")
+    parser.add_argument("-c", "--config", help="Configuration file", required=True, type=pathlib.Path)
+    args = parser.parse_args()
     config = configparser.ConfigParser()
-    config.read('.config_sg')
+    config.read(args.config)
     sections = config.sections()
     waiting_s = int(config['INIT']["wait_loop"])
     while True:

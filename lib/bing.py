@@ -10,9 +10,9 @@ class Bing(AdsMonitor):
         AdsMonitor.__init__(self, settings)
 
     def search_ad(self, ad: str, keyword: str):
-        page = self.wait_to_find_elements(self.driver, "body")
-        ad_infos = self.wait_to_find_elements(ad, "h2 a")
-        site_url = self.wait_to_find_elements(ad, ".b_caption  a")
+        page = self.wait_for_elements(self.driver, "body")
+        ad_infos = self.wait_for_elements(ad, "h2 a")
+        site_url = self.wait_for_elements(ad, ".b_caption  a")
         if site_url and ad_infos and site_url[0].text != '':
             parsed_domain = AdsMonitor.get_domain_from_url(site_url[0].text)
             is_suspect = True if parsed_domain not in json.loads(self.settings["accepted_domains"]) else False
@@ -33,7 +33,7 @@ class Bing(AdsMonitor):
                 )
                 print(f"Suspected Ads: {ph_site['ad_site_url_text']}")
                 self.screenshot(page[0], f'{keyword.replace(" ", "-")}_{parsed_domain}')
-                ph_url = self.get_screen_ph_site(ph_site['ad_link'])
+                ph_url = self.get_ph_site(ph_site['ad_link'])
                 ph_site.update({"ph_url": ph_url})
                 self.ph_site_list.append(ph_site)
 
@@ -42,9 +42,13 @@ class Bing(AdsMonitor):
             time.sleep(1)
             print(f"Searching on {__class__.__name__} for '{keyword}'")
             self.driver.get('https://www.bing.com/search?q=' + keyword)
-            ads = self.wait_to_find_elements(self.driver, 'li.b_adTop ul li .sb_add')
+            ads = self.wait_for_elements(self.driver, 'li.b_adTop ul li .sb_add')
             for ad in ads:
                 self.search_ad(ad, keyword)
         if self.pb and self.ph_site_list:
-            self.pb.push_note("Suspect Ads detected", "\n".join([f"{k}: {v}" for k, v in self.ph_site_list.items()]))
+            for ph_site in self.ph_site_list:
+                self.pb.push_note(
+                    "Suspect Ads detected",
+                    "\n".join([f"{k}: {v}" for k, v in ph_site.items()])
+                )
         self.driver.close()
