@@ -21,7 +21,7 @@ class AdsMonitor:
         self.driver = uc.Chrome(headless=True)
         self.config, self.section = settings
         self.settings = self.config[self.section]
-        if "pushbullet_key_api" in settings and settings["pushbullet_key_api"]:
+        if "pushbullet_key_api" in self.config["INIT"] and self.config["INIT"]["pushbullet_key_api"]:
             from pushbullet import Pushbullet
             self.pb = Pushbullet(self.config["INIT"]["pushbullet_key_api"])
 
