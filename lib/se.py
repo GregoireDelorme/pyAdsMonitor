@@ -25,7 +25,7 @@ class AdsMonitor:
             from pushbullet import Pushbullet
             self.pb = Pushbullet(self.config["INIT"]["pushbullet_key_api"])
 
-    def wait_to_find_elements(self, element, css):
+    def wait_for_elements(self, element, css):
         wait = WebDriverWait(self.driver, 2)
         try:
             wait.until(ec.visibility_of_all_elements_located((By.CSS_SELECTOR, css)))
@@ -33,10 +33,10 @@ class AdsMonitor:
         except Exception as e:
             return []
 
-    def get_screen_ph_site(self, url):
+    def get_ph_site(self, url):
         self.driver.get(url)
         date = datetime.now().strftime("%m-%d-%Y_%Hh%M")
-        page = self.wait_to_find_elements(self.driver, "body")
+        page = self.wait_for_elements(self.driver, "body")
         site_url = self.driver.current_url
         parsed_domain = AdsMonitor.get_domain_from_url(site_url)
         self.screenshot(page[0], f'ph_{parsed_domain}')
