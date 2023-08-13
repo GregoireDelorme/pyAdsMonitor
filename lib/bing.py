@@ -46,5 +46,9 @@ class Bing(AdsMonitor):
             for ad in ads:
                 self.search_ad(ad, keyword)
         if self.pb and self.ph_site_list:
-            self.pb.push_note("Suspect Ads detected", "\n".join([f"{k}: {v}" for x in  self.ph_site_list for k, v in x.items()]))
+            for ph_site in self.ph_site_list:
+                self.pb.push_note(
+                    "Suspect Ads detected",
+                    "\n".join([f"{k}: {v}" for k, v in ph_site.items()])
+                )
         self.driver.close()
