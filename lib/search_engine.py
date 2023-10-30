@@ -130,9 +130,9 @@ class Google(SearchEngine):
         SearchEngine.__init__(self, launcher, section)
 
     def search_ad(self, ad, keyword: str):
-        page = self.wait_for_elements(self.driver, "body")
-        ele1 = self.wait_for_elements(ad, "div[role='heading'] span")
-        ele2 = self.wait_for_elements(ad, "a")
+        page = self.wait_for_elements(self.driver, "//body")
+        ele1 = self.wait_for_elements(ad, "div[role='heading'] span", By.CSS_SELECTOR)  # Utiliser xpath...
+        ele2 = self.wait_for_elements(ad, "//a")
         if ele2 and ele1:
             ad_site_url = ele2[0].get_attribute('href')
             parsed_domain = SearchEngine.get_domain_from_url(ad_site_url)
